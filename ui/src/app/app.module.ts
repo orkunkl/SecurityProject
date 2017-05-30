@@ -7,6 +7,13 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { routing } from './app.routes';
+import { AuthHttp, AuthConfig } from 'angular2-jwt';
+import { Http, RequestOptions } from '@angular/http';
+import {ToastyModule} from 'ng2-toasty';
+
+export function authHttpServiceFactory(http: Http, options: RequestOptions) {
+  return new AuthHttp(new AuthConfig(), http, options);
+}
 
 @NgModule({
   declarations: [
@@ -18,9 +25,16 @@ import { routing } from './app.routes';
     BrowserModule,
     FormsModule,
     HttpModule,
-    routing
+    routing,
+    ToastyModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    {
+      provide: AuthHttp,
+      useFactory: authHttpServiceFactory,
+      deps: [Http, RequestOptions]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
