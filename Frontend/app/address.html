@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My seller</title>
+    <script src="framework/angular.min.js"></script>
+    <script src="framework/jquery-3.2.1.min.js"></script>
+    <script src="framework/bootstrap-4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="framework/bootstrap-4.0.0/css/bootstrap.css">
+    <link rel="stylesheet" href="style/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="main.css">
+
+
+</head>
+<body>
+
+<nav class="navbar navbar-toggleable-sm navbar-inverse fixed-top bg-inverse">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#">My shopping app</a>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
+            </li>
+
+        </ul>
+    </div>
+</nav>
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1 ">
+            <h4 class="mb-3 mt-2 text-center">
+                Select address
+            </h4>
+            <div class="address row">
+                <p class="col-10">Thibault Simonetto, Piazza Università, 1, Bolzano, 39100, Italia </p>
+                <a href="#" class=" h-100 col-2 btn btn-primary">Select</a>
+            </div>
+            <div class="address row">
+                <p class="col-10">Thibault Simonetto, Avenue de l'Université, 2, Esch-sur-Alzette, 4356, Luxembourg </p>
+                <a href="#" class=" h-100 col-2 btn btn-primary">Select</a>
+            </div>
+
+
+            <h4 class="mb-3 mt-5 text-center">
+                Add new address
+            </h4>
+            <div class="form-group row">
+                <label for="name-signup" class="col-3 col-form-label">Name</label>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="" id="street">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="name-signup" class="col-3 col-form-label">Street</label>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="" id="street">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="email-signup" class="col-3 col-form-label">Number</label>
+                <div class="col-9">
+                    <input class="form-control" type="number" placeholder="" id="number">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password1-signup" class="col-3 col-form-label">City</label>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="" id="city">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password2-signup" class="col-3 col-form-label">Zip Code</label>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="" id="zip-code">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password2-signup" class="col-3 col-form-label">State</label>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="Only for United States & Canada" id="state">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password2-signup" class="col-3 col-form-label">Country</label>
+                <div class="col-9">
+                    <input class="form-control" type="text" placeholder="" id="country">
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="#" class="btn btn-primary ">Add new address</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

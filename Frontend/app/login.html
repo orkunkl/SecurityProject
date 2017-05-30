@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My seller</title>
+    <script src="framework/angular.min.js"></script>
+    <script src="framework/jquery-3.2.1.min.js"></script>
+    <script src="framework/bootstrap-4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="framework/bootstrap-4.0.0/css/bootstrap.css">
+    <link rel="stylesheet" href="style/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="main.css">
+
+
+</head>
+<body>
+
+<nav class="navbar navbar-toggleable-sm navbar-inverse fixed-top bg-inverse">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#">My shopping app</a>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
+            </li>
+
+        </ul>
+    </div>
+</nav>
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-6 offset-xl-3 col-lg-8 offset-lg-2 col-md-10 offset-md-1 ">
+            <h4 class="mb-3 mt-2 text-center">
+                Sign in
+            </h4>
+            <div class="form-group row">
+                <label for="email-login" class="col-2 col-form-label">Email</label>
+                <div class="col-10">
+                    <input class="form-control" type="email" placeholder="john.doe@example.com" id="email-login">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password-login" class="col-2 col-form-label">Password</label>
+                <div class="col-10">
+                    <input class="form-control" type="password" placeholder="MyPa$$W0rd" id="password-login">
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="#" class="btn btn-primary ">Sign in</a>
+            </div>
+            <h4 class="mb-3 mt-5 text-center">
+                Create account
+            </h4>
+            <div class="form-group row">
+                <label for="name-signup" class="col-2 col-form-label">Name</label>
+                <div class="col-10">
+                    <input class="form-control" type="text" placeholder="John Doe" id="name-signup">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="email-signup" class="col-2 col-form-label">Email</label>
+                <div class="col-10">
+                    <input class="form-control" type="email" placeholder="john.doe@example.com" id="email-signup">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password1-signup" class="col-2 col-form-label">Password</label>
+                <div class="col-10">
+                    <input class="form-control" type="password" placeholder="MyPa$$W0rd" id="password1-signup">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password2-signup" class="col-2 col-form-label">Password</label>
+                <div class="col-10">
+                    <input class="form-control" type="password" placeholder="MyPa$$W0rd" id="password2-signup">
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="#" class="btn btn-primary ">Create your account</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
