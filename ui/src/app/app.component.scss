@@ -1,17 +1,24 @@
-h1 {
-  color: black;
+body {
+    padding-top: 4.5rem;
+}
+/*img {*/
+    /*max-width: 100%;*/
+    /*width: auto;*/
+    /*height: auto;*/
+    /*vertical-align: middle;*/
+    /*border: 0;*/
+    /*-ms-interpolation-mode: bicubic;*/
+/*}*/
 
-  span {
-    color: white;
-    background-color: darkblue;
+.card {
+    margin-bottom: 2em;
+}
 
-    b {
-      color: #b37399;
-    }
+.img-fluid-perso{
+    width: 100%;
+    height: auto;
+}
 
-    i {
-      color: red;
-    }
-  }
-
+#example-number-input{
+    width: 4em;
 }
