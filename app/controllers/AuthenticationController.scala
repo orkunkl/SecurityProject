@@ -13,10 +13,14 @@ import play.api.mvc._
 import services.{DatabaseController}
 import utils.forms._
 import utils.DatabaseHelpers._
+import utils.UserAuthData
 import play.api.Logger
 import services.Authenticator
 import com.github.t3hnar.bcrypt._
-import scalaz.OptionT._
+import pdi.jwt._
+import pdi.jwt.JwtSession._
+import pdi.jwt.Jwt._
+
 @Singleton
 class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator) extends Controller {
 
@@ -38,11 +42,11 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
   )(RegisterForm)
 
 
-  def register = Action.async(validateJson[RegisterForm]){ request =>
+  def register = Action.async(validateJson[RegisterForm]){ implicit request =>
     
     val user = request.body
     DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false)).map(
-      addedUser => Ok(Json.obj("status" -> "Successful")).withSession("username" -> user.username, "password" -> user.password)
+      addedUser => Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
     )
   }
   
@@ -56,13 +60,12 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
     (JsPath \ "password").read[String]
   )(LoginForm)
 
-  def login = Action.async(validateJson[LoginForm]) { request =>
+  def login = Action.async(validateJson[LoginForm]) { implicit request =>
     
     val user = request.body
     DatabaseController.userLookup(user.username, user.password.bcrypt).map{
       _ match {
-        case userFoundPasswordMatches(user) =>Ok(Json.obj("status" -> "Successful")).withSession("username" -> user.username,
-                                                                                               "password" -> user.password)
+        case userFoundPasswordMatches(user) => Ok.addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
         case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
         case userNotFound => Ok(Json.obj("status" -> "user not found"))
       }

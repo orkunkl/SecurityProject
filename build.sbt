@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick-evolutions" % "2.1.0",
   "org.postgresql" % "postgresql" % "9.4.1212",
   "com.github.t3hnar" %% "scala-bcrypt" % "3.0",
-  "org.scalaz" %% "scalaz-core" % "7.2.12",
+  "com.pauldijou" %% "jwt-play" % "0.12.1",
   filters
 )
 

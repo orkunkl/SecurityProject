@@ -15,9 +15,10 @@ import play.api.libs.json.Reads._
 import models.Item
 import play.filters.csrf._
 import services.Authenticator
+import controllers.Secured
 
 @Singleton
-class AdminController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator) extends Controller {
+class AdminController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator) extends Controller with Secured{
 
   def validateJson[A: Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
@@ -36,7 +37,7 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
 
   //case class Item(itemID: Option[Int], name: str,ng, quantity: Int, price: Float, description: String, categoryID: Int)
 
-  def addItem() = Action.async(validateJson[ItemFormat]) { request =>
+  def addItem() = Admin.async(validateJson[ItemFormat]) { request =>
     authenticator.auth(request.session).flatMap { user =>
       val item = request.body
       DatabaseController.insertItem(Item(item.itemID, item.name, item.quantity, item.price, item.description, item.categoryID, null)).map { addedItem =>
@@ -45,7 +46,7 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
     }
   }
 
-  def uploadItemPicture() = Action.async(parse.multipartFormData) { request =>
+  def uploadItemPicture() = Admin.async(parse.multipartFormData) { request =>
     for {
       userOpt <- authenticator.auth(request.session)
     } yield {
@@ -70,7 +71,7 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
     (JsPath \ "itemID").read[Int](min(0))
     ).map(removeItemForm.apply _)
 
-  def removeItem() = Action.async(validateJson[removeItemForm]) { request =>
+  def removeItem() = Admin.async (validateJson[removeItemForm]) { request =>
     authenticator.auth(request.session).flatMap {
       _ match {
         case Some(user) =>
