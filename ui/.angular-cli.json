@@ -21,7 +21,8 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/ng2-toasty/style.css"
+        "../node_modules/ng2-toasty/style.css",
+        "../node_modules/bootstrap/dist/css/bootstrap.min.css"
       ],
       "scripts": [
       ],
