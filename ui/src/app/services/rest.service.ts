@@ -12,44 +12,14 @@ export class RestService {
 	private baseUrl = "http://localhost:9000";
 	private loginUrl = this.baseUrl + "/login";
   private registerUrl = this.baseUrl + "/register";
+  private options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) }); 
+  constructor(private AuthHttp : AuthHttp, private http: Http, private toasty: ToastyService) { }
   
-  constructor(private AuthHttp : AuthHttp, private http: Http, private toasty: ToastyService) {  }
-  	
   login(username: string, password: string){
-    let options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) });
-  	return this.http.post(this.loginUrl, JSON.stringify({ username: username, password: password}), options).map(res => res);
-     
+  	return this.http.post(this.loginUrl, JSON.stringify({ username: username, password: password}), this.options).map(res => res);
   }
   register(username: string, email: string, name: string, surname: string, password: string) {
-    let data = JSON.stringify({username: username, email: email, name: name, surname: surname, password: password})
-      return this.http.post(this.registerUrl, data)
-        .map(data => data.json())
-        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
-       
+    let data = JSON.stringify({username: username, email: email, name: name, surname: surname, password: password});
+      return this.http.post(this.registerUrl, data, this.options).map(res => res);
   }
-/*
-        .subscribe(res => 
-          {
-            if(res.status == "Successful")
-              return true;
-            else {
-              let toastOptions:ToastOptions = {
-                title: "Error",
-                msg: "The message",
-                showClose: true,
-                timeout: 5000,
-                theme: 'default',
-                onAdd: (toast:ToastData) => {
-                    console.log('Toast ' + toast.id + ' has been added!');
-                },
-                onRemove: function(toast:ToastData) {
-                    console.log('Toast ' + toast.id + ' has been removed!');
-                }
-              };
-              this.toastyService.error(toastOptions);
-              return false;
-            }
-          }
-        )*/
 }
-

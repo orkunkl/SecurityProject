@@ -65,4 +65,35 @@ export class LoginComponent implements OnInit {
         this.toastyService.error(toastOptions);
       });
     }
+    register(form: registerForm, isValid: boolean) {
+      this.RestService.register(form.username, form.email, form.name, form.surname, form.password).subscribe(
+        data => {
+          if(data.json().status == "Successful"){
+            console.log('register successful')
+            this.sessionStorage.store("token", data.headers.get("Authorization"))
+            return true;
+          }
+          else {
+            let toastOptions:ToastOptions = {
+                title: "Error",
+                msg: data.json().status,
+                showClose: true,
+                timeout: 5000,
+                theme: 'default',
+              };
+            this.toastyService.error(toastOptions);
+            return false;
+          }
+        },
+        err => {
+        let toastOptions:ToastOptions = {
+                title: "Error",
+                msg: err,
+                showClose: true,
+                timeout: 5000,
+                theme: 'default',
+              };
+        this.toastyService.error(toastOptions);
+      });
+    }
  }

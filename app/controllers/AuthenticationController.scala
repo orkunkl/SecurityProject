@@ -46,12 +46,15 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
   def register = addToken {  
       Action.async(validateJson[RegisterForm]){ implicit request =>
         val user = request.body
-        DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false)).map(
-        addedUser => {
+        for {
+          checkUsername <- DatabaseController.checkUsernameTaken(user.username)
+          if checkUsername
+          addedUser <- DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false))
+        } yield {
           Logger.info("/register recieved user : " + addedUser)
           Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
         }
-      )
+        Future(Ok(Json.obj("status" -> "Successful")))
     }
   }
   

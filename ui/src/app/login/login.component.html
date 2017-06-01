@@ -19,13 +19,15 @@
                         formControlName="password">
                     </div>
                 </div>
-
-                <button type="submit" class="btn btn-default">
-                    Sign in
-                </button>
+            
+                <div class="text-center">
+                    <button type="submit" class="btn btn-default">
+                        Sign in
+                    </button>
+                </div>
             </div>
         </form>
-        <form [formGroup]="registerForm" (ngSubmit)="login(registerForm.value, registerForm.valid)">
+        <form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value, registerForm.valid)">
 
             <h4 class="mb-3 mt-5 text-center">
                 Create account

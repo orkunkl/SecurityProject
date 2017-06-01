@@ -34,6 +34,13 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
   */
   def addNewUser(user: User): Future[User] = db.run(UserTable.returning(UserTable.map(user => user)) += user)
 
+  def checkUsernameTaken(username: String): Future[Boolean] = db.run(UserTable.filter(_.username === username).result.headOption).map{
+    _ match {
+      case Some(user) => false
+      case None => true
+    }
+  }
+
   def userLookup(username: String, password: String): Future[dbUserCheckResponse] = db.run(UserTable.filter(_.username === username).result.headOption).map{ response =>
     response match {
   		case Some(user: User) => {
