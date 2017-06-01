@@ -3,8 +3,10 @@ import { registerForm } from '../models/registerForm.interface'
 import { loginForm } from '../models/loginForm.interface'
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { RestService } from '../services/rest.service'
+import { Logger } from "angular2-logger/core"; // ADD THIS
+import { SessionStorageService } from 'ngx-webstorage';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/subscribe';
+import { Response } from '@angular/http';
 import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 
 @Component({
@@ -17,7 +19,8 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
   public registerForm: FormGroup;
   public submitted: boolean;
-  constructor(private _fb: FormBuilder, private RestService: RestService,  private toastyService:ToastyService, private toastyConfig: ToastyConfig) { }
+  constructor(private logger: Logger, private _fb: FormBuilder, private RestService: RestService,  private toastyService:ToastyService,
+               private toastyConfig: ToastyConfig, private sessionStorage: SessionStorageService) { }
 
   ngOnInit() {
   	this.loginForm = this._fb.group({
@@ -33,45 +36,55 @@ export class LoginComponent implements OnInit {
         });
   }
   login(loginForm: loginForm, isValid: boolean) {
-    this.RestService.login(loginForm.username, loginForm.password)
-      .subscribe(
-        data => {
-          if(data == true){
-              
+    this.RestService.login(loginForm.username, loginForm.password).subscribe(
+      data => {
+          if(data.json().status == "Successful"){
+            this.logger.info('login successful')
+            this.sessionStorage.store("token", data.headers.get("Authorization"))
+            return true;
           }
           else {
             let toastOptions:ToastOptions = {
-              title: "Error",
-              msg: "The message",
-              showClose: true,
-              timeout: 5000,
-              theme: 'default',
-              onAdd: (toast:ToastData) => {
-                console.log('Toast ' + toast.id + ' has been added!');
-              },
-              onRemove: function(toast:ToastData) {
-                console.log('Toast ' + toast.id + ' has been removed!');
-              }
+                title: "Error",
+                msg: "Authentication error",
+                showClose: true,
+                timeout: 5000,
+                theme: 'default',
               };
-              this.toastyService.error(toastOptions);
+            this.toastyService.error(toastOptions);
+            return false;
           }
-        },
-        error => {
-            let toastOptions:ToastOptions = {
-              title: "Error",
-              msg: "The message",
-              showClose: true,
-              timeout: 5000,
-              theme: 'default',
-              onAdd: (toast:ToastData) => {
-                console.log('Toast ' + toast.id + ' has been added!');
-              },
-              onRemove: function(toast:ToastData) {
-                console.log('Toast ' + toast.id + ' has been removed!');
-              }
+      },
+      err => {
+        let toastOptions:ToastOptions = {
+                title: "Error",
+                msg: err,
+                showClose: true,
+                timeout: 5000,
+                theme: 'default',
               };
-              this.toastyService.error(toastOptions);
-        }
-      );
-  }
-}
+        this.toastyService.error(toastOptions);
+      });
+    }
+ }
+/*if(data.json().status == "Successful"){
+            this.logger.info('login successful')
+            return true;
+          }
+          else {
+            let toastOptions:ToastOptions = {
+                title: "Error",
+                msg: "Authentication error",
+                showClose: true,
+                timeout: 5000,
+                theme: 'default',
+                onAdd: (toast:ToastData) => {
+                    console.log('Toast ' + toast.id + ' has been added!');
+                },
+                onRemove: function(toast:ToastData) {
+                    console.log('Toast ' + toast.id + ' has been removed!');
+                }
+              };
+            this.toasty.error(toastOptions);
+            return false;
+          }*/

@@ -16,6 +16,7 @@ import scala.concurrent.Future
 import models._
 import utils.DatabaseHelpers._
 import play.api.Logger
+import com.github.t3hnar.bcrypt._
 
 
 
@@ -36,7 +37,7 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
   def userLookup(username: String, password: String): Future[dbUserCheckResponse] = db.run(UserTable.filter(_.username === username).result.headOption).map{ response =>
     response match {
   		case Some(user: User) => {
-  			if(user.password == password){
+  			if(password.isBcrypted(user.password)){
   				userFoundPasswordMatches(user)
         }
   			else

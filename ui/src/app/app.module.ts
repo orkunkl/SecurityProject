@@ -11,9 +11,16 @@ import { Http, RequestOptions } from '@angular/http';
 import { ToastyModule } from 'ng2-toasty';
 import { Logger } from "angular2-logger/core"; // ADD THIS
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RestService } from './services/rest.service'
-export function authHttpServiceFactory(http: Http, options: RequestOptions) {
-  return new AuthHttp(new AuthConfig(), http, options);
+import { RestService } from './services/rest.service';
+import { Ng2Webstorage, SessionStorageService } from 'ngx-webstorage';
+
+export function authHttpServiceFactory(http: Http, options: RequestOptions, sessionService: SessionStorageService) {
+  return new AuthHttp(
+    new AuthConfig({
+      tokenName: 'token',
+      tokenGetter: (() => sessionService.retrieve('token')),
+      globalHeaders: [{'Content-Type':'application/json'}],
+  }), http, options);
 }
 
 @NgModule({
@@ -24,6 +31,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions) {
   ],
   imports: [
     BrowserModule,
+    Ng2Webstorage,
     FormsModule,
     HttpModule,
     routing,

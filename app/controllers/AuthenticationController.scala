@@ -46,7 +46,10 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
     
     val user = request.body
     DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false)).map(
-      addedUser => Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
+      addedUser => {
+        Logger.info("/register recieved user : " + addedUser)
+        Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
+      }
     )
   }
   
@@ -63,7 +66,7 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
   def login = Action.async(validateJson[LoginForm]) { implicit request =>
     
     val user = request.body
-    DatabaseController.userLookup(user.username, user.password.bcrypt).map{
+    DatabaseController.userLookup(user.username, user.password).map{
       _ match {
         case userFoundPasswordMatches(user) => Ok.addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
         case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
