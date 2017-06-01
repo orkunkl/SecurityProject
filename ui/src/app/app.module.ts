@@ -12,6 +12,8 @@ import { ToastyModule } from 'ng2-toasty';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RestService } from './services/rest.service';
 import { Ng2Webstorage, SessionStorageService } from 'ngx-webstorage';
+import { ItemComponent } from './item/item.component';
+import { ItemlistComponent } from './itemlist/itemlist.component';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions, sessionService: SessionStorageService) {
   return new AuthHttp(
@@ -26,7 +28,9 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions, sess
   declarations: [
     AppComponent,
     NavbarComponent,
-    LoginComponent
+    LoginComponent,
+    ItemComponent,
+    ItemlistComponent
   ],
   imports: [
     BrowserModule,

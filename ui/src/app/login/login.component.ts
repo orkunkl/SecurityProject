@@ -96,4 +96,7 @@ export class LoginComponent implements OnInit {
         this.toastyService.error(toastOptions);
       });
     }
+    logout(){
+      
+    }
  }

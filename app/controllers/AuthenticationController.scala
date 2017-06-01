@@ -82,10 +82,11 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
     }
   }
 
-  def logout = Action.async {
-    Future{
-      Ok(Json.obj("status" -> "successful")).withNewSession
+  def logout = checkToken { 
+    Action.async {
+      Future{
+        Ok(Json.obj("status" -> "successful")).withNewSession
+      }
     }
   }
-
 }

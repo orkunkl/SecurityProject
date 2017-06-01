@@ -12,7 +12,10 @@ export class RestService {
 	private baseUrl = "http://localhost:9000";
 	private loginUrl = this.baseUrl + "/login";
   private registerUrl = this.baseUrl + "/register";
+  private logoutUrl = this.baseUrl + "/logout";
+
   private options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) }); 
+
   constructor(private AuthHttp : AuthHttp, private http: Http, private toasty: ToastyService) { }
   
   login(username: string, password: string){
@@ -20,6 +23,9 @@ export class RestService {
   }
   register(username: string, email: string, name: string, surname: string, password: string) {
     let data = JSON.stringify({username: username, email: email, name: name, surname: surname, password: password});
-      return this.http.post(this.registerUrl, data, this.options).map(res => res);
+    return this.http.post(this.registerUrl, data, this.options).map(res => res);
+  }
+  logout(){
+    this.http.get(this.logoutUrl).map(res => res);
   }
 }
