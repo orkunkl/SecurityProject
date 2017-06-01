@@ -20,9 +20,10 @@ import com.github.t3hnar.bcrypt._
 import pdi.jwt._
 import pdi.jwt.JwtSession._
 import pdi.jwt.Jwt._
+import play.filters.csrf._
 
 @Singleton
-class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator) extends Controller {
+class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator, addToken: CSRFAddToken, checkToken: CSRFCheck) extends Controller {
 
   def validateJson[A : Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
@@ -42,15 +43,16 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
   )(RegisterForm)
 
 
-  def register = Action.async(validateJson[RegisterForm]){ implicit request =>
-    
-    val user = request.body
-    DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false)).map(
-      addedUser => {
-        Logger.info("/register recieved user : " + addedUser)
-        Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
-      }
-    )
+  def register = addToken {  
+      Action.async(validateJson[RegisterForm]){ implicit request =>
+        val user = request.body
+        DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false)).map(
+        addedUser => {
+          Logger.info("/register recieved user : " + addedUser)
+          Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
+        }
+      )
+    }
   }
   
   /*
@@ -63,18 +65,19 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
     (JsPath \ "password").read[String]
   )(LoginForm)
 
-  def login = Action.async(validateJson[LoginForm]) { implicit request =>
+  def login = addToken {
+    Action.async(validateJson[LoginForm]) { implicit request =>
     
-    val user = request.body
-    DatabaseController.userLookup(user.username, user.password).map{
-      _ match {
-        case userFoundPasswordMatches(user) => Ok.addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
-        case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
-        case userNotFound => Ok(Json.obj("status" -> "user not found"))
+      val user = request.body
+      DatabaseController.userLookup(user.username, user.password).map{
+        _ match {
+          case userFoundPasswordMatches(user) => Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
+          case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
+          case userNotFound => Ok(Json.obj("status" -> "user not found"))
+        }
       }
     }
   }
-  
 
   def logout = Action.async {
     Future{

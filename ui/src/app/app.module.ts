@@ -9,7 +9,6 @@ import { routing } from './app.routes';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Http, RequestOptions } from '@angular/http';
 import { ToastyModule } from 'ng2-toasty';
-import { Logger } from "angular2-logger/core"; // ADD THIS
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RestService } from './services/rest.service';
 import { Ng2Webstorage, SessionStorageService } from 'ngx-webstorage';
@@ -44,7 +43,6 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions, sess
       useFactory: authHttpServiceFactory,
       deps: [Http, RequestOptions]
     },
-    Logger,
     RestService
   ],
   bootstrap: [AppComponent]
