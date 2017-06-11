@@ -18,7 +18,7 @@ POST	/admin/addItem				controllers.AdminController.addItem
 
 POST	/admin/removeItem			controllers.AdminController.removeItem
 
-POST 	/admin/login				controllers.AdminControler.adminLogin
+POST 	/admin/login				controllers.AdminController.adminLogin
 
 #POST	/payment/					controllers.PaymentController
 

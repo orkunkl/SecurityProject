@@ -9,6 +9,7 @@ import { Response } from '@angular/http';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 import { Router } from '@angular/router';
 import { ItemlistComponent } from '../itemlist/itemlist.component'
+import { User } from '../models/User'
 
 @Component({
   selector: 'app-login',
@@ -42,8 +43,9 @@ export class LoginComponent implements OnInit {
           if(data.json().status == "Successful"){
             console.log('login successful')
             this.sessionStorage.store("token", data.headers.get("Authorization"))
-            if(data.json().isAdmin == "true")
-                this.sessionStorage.store("user", data.headers.get("Authorization"))
+            var json = data.json()
+            var user: User = new User(json.userID, json.username, json.email, json.surname, json.isAdmin)
+            this.sessionStorage.store("user", user)
             this.router.navigate(['/']);
 
             return true;
@@ -77,7 +79,9 @@ export class LoginComponent implements OnInit {
           if(data.json().status == "Successful"){
             console.log('register successful')
             this.sessionStorage.store("token", data.headers.get("Authorization"))
-            this.sessionStorage.store("user", data.json().user)
+            var json = data.json()
+            var user: User = new User(json.userID, json.username, json.email, json.surname, json.isAdmin)
+            this.sessionStorage.store("user", user)
             return true;
           }
           else {

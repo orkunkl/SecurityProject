@@ -15,15 +15,14 @@ import utils.forms._
 import utils.DatabaseHelpers._
 import utils.UserAuthData
 import play.api.Logger
-import services.Authenticator
 import com.github.t3hnar.bcrypt._
 import pdi.jwt._
 import pdi.jwt.JwtSession._
 import pdi.jwt.Jwt._
 import play.filters.csrf._
-
+import utils.UserAuthData
 @Singleton
-class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator, addToken: CSRFAddToken, checkToken: CSRFCheck) extends Controller {
+class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController, addToken: CSRFAddToken, checkToken: CSRFCheck) extends Controller {
 
   def validateJson[A : Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
@@ -42,7 +41,14 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
     (JsPath \ "password").read[String]
   )(RegisterForm)
 
-
+  implicit val UserWrites = new Writes[User] {
+      def writes(user: User) = Json.obj(
+          "userID" -> user.userID,
+          "username" -> user.username,
+          "password" -> user.password,
+          "isAdmin" -> user.isAdmin
+      )
+  }
   def register = addToken {  
       Action.async(validateJson[RegisterForm]){ implicit request =>
         val user = request.body

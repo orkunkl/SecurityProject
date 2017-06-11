@@ -16,6 +16,7 @@ import { ItemComponent } from './item/item.component';
 import { ItemlistComponent } from './itemlist/itemlist.component';
 import { AdminpanelComponent } from './adminpanel/adminpanel.component';
 import { AdminloginComponent } from './adminpanel/adminlogin/adminlogin.component';
+import { DashboardComponent } from './adminpanel/dashboard/dashboard.component';
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions, sessionService: SessionStorageService) {
   return new AuthHttp(
@@ -34,7 +35,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions, sess
     ItemComponent,
     ItemlistComponent,
     AdminpanelComponent,
-    AdminloginComponent
+    AdminloginComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

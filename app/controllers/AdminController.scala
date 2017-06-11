@@ -14,11 +14,15 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import models.Item
 import play.filters.csrf._
-import services.Authenticator
 import controllers.Secured
+import utils.forms.LoginForm
+import pdi.jwt._
+import pdi.jwt.JwtSession._
+import pdi.jwt.Jwt._
+import utils.UserAuthData
 
 @Singleton
-class AdminController @Inject()(environment: Environment, DatabaseController: DatabaseController, authenticator: Authenticator) extends Controller with Secured{
+class AdminController @Inject()(environment: Environment, DatabaseController: DatabaseController, addToken: CSRFAddToken, checkToken: CSRFCheck) extends Controller with Secured{
 
   def validateJson[A: Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
@@ -56,30 +60,32 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
   //case class Item(itemID: Option[Int], name: str,ng, quantity: Int, price: Float, description: String, categoryID: Int)
 
   def addItem() = Admin.async(validateJson[ItemFormat]) { request =>
-    authenticator.auth(request.session).flatMap { user =>
-      val item = request.body
-      DatabaseController.insertItem(Item(item.itemID, item.name, item.quantity, item.price, item.description, item.categoryID, null)).map { addedItem =>
-        Ok(Json.obj("status" -> "Successful")).withSession(request.session + ("uploadID" -> addedItem.itemID.get.toString))
-      }
+    val item = request.body
+    DatabaseController.insertItem(Item(item.itemID, item.name, item.quantity, item.price, item.description, item.categoryID, null)).map { addedItem =>
+      Ok(Json.obj("status" -> "Successful")).withSession(request.session + ("uploadID" -> addedItem.itemID.get.toString))
     }
   }
-
+  implicit val LoginFormReads: Reads[LoginForm] = (
+    (JsPath \ "username").read[String] and
+    (JsPath \ "password").read[String]
+  )(LoginForm)
   def uploadItemPicture() = Admin.async(parse.multipartFormData) { request =>
-    for {
-      userOpt <- authenticator.auth(request.session)
-    } yield {
-      val p2 = for {
-        user <- userOpt
-        itemID <- request.session.get("uploadID")
-        file <- request.body.file("picture")
-      } yield {
-        import java.io.File
-        val filename = file.filename
-        val contentType = file.contentType
-        file.ref.moveTo(new File("/tmp/picture/" + filename))
-        Ok(Json.obj("status" -> "Successful"))
-      }
-      p2.getOrElse(Ok(Json.obj("status" -> "Successful")))
+    
+    request.session.get("uploadID") match {
+        case Some(uploadID: String) => {
+          request.body.file("picture") match {
+            case Some(file) => {
+              import java.io.File
+              val filename = file.filename
+              val contentType = file.contentType
+              file.ref.moveTo(new File("/tmp/picture/" + filename))
+              Future(Ok(Json.obj("status" -> "Successful")))
+            }
+            case None => Future(Ok(Json.obj("status" -> "no id found")))
+
+          }
+        }
+        case None => Future(Ok(Json.obj("status" -> "no id found")))
     }
   }
 
@@ -90,15 +96,9 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
     ).map(removeItemForm.apply _)
 
   def removeItem() = Admin.async (validateJson[removeItemForm]) { request =>
-    authenticator.auth(request.session).flatMap {
-      _ match {
-        case Some(user) =>
-          val item = request.body
-          DatabaseController.removeItem(item.itemID).map { _ =>
-            Ok(Json.obj("status" -> "Successful"))
-          }
-        case None => Future(Ok(""))
-      }
-    }  
+    val item = request.body
+    DatabaseController.removeItem(item.itemID).map { _ =>
+      Ok(Json.obj("status" -> "Successful"))
+    }
   }
 }
