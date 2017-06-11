@@ -24,6 +24,24 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
   )
 
+  def adminLogin = addToken {
+    Action.async(validateJson[LoginForm]) { implicit request =>
+    
+      val user = request.body
+      DatabaseController.userLookup(user.username, user.password).map{
+        _ match {
+          case userFoundPasswordMatches(user) => {
+            if(user.isAdmin)
+              Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
+            else
+              Ok(Json.obj("status" -> "User is not admin"))
+          }
+          case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
+          case userNotFound => Ok(Json.obj("status" -> "user not found"))
+        }
+      }
+    }
+  }
   case class ItemFormat(itemID: Option[Int], name: String, quantity: Int, price: Float, description: String, categoryID: Int)
 
   implicit val itemReads: Reads[ItemFormat] = (

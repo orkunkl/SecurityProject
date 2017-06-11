@@ -6,7 +6,9 @@ import { RestService } from '../services/rest.service'
 import { SessionStorageService } from 'ngx-webstorage';
 import { Observable } from 'rxjs/Observable';
 import { Response } from '@angular/http';
-import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
+import { Router } from '@angular/router';
+import { ItemlistComponent } from '../itemlist/itemlist.component'
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,7 @@ export class LoginComponent implements OnInit {
   public registerForm: FormGroup;
   public submitted: boolean;
   constructor(private _fb: FormBuilder, private RestService: RestService,  private toastyService:ToastyService,
-               private toastyConfig: ToastyConfig, private sessionStorage: SessionStorageService) { }
+               private toastyConfig: ToastyConfig, private sessionStorage: SessionStorageService, private router: Router) { }
 
   ngOnInit() {
   	this.loginForm = this._fb.group({
@@ -40,6 +42,10 @@ export class LoginComponent implements OnInit {
           if(data.json().status == "Successful"){
             console.log('login successful')
             this.sessionStorage.store("token", data.headers.get("Authorization"))
+            if(data.json().isAdmin == "true")
+                this.sessionStorage.store("user", data.headers.get("Authorization"))
+            this.router.navigate(['/']);
+
             return true;
           }
           else {
@@ -71,6 +77,7 @@ export class LoginComponent implements OnInit {
           if(data.json().status == "Successful"){
             console.log('register successful')
             this.sessionStorage.store("token", data.headers.get("Authorization"))
+            this.sessionStorage.store("user", data.json().user)
             return true;
           }
           else {

@@ -15,7 +15,6 @@ import play.api.libs.json.Reads._
 import models.Item
 import play.filters.csrf._
 
-
 @Singleton
 class ItemController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller {
 
@@ -23,16 +22,6 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
   def validateJson[A : Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
   )
-
-  implicit val itemWrites = new Writes[Item] {
-    def writes(item: Item) = Json.obj(
-      "id" -> item.itemID,
-      "name" -> item.name,
-      "quantity" -> item.quantity,
-      "price" -> item.price,
-      "description" -> item.description,
-      "categoryID" -> item.categoryID)
-  }
 
   def showItem(id: Int) = Action.async { request =>
     if(id >= 0)
@@ -46,6 +35,16 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
       }
     else
       Future(BadRequest("invalid id"))
+  }
+
+  implicit val itemWrites = new Writes[Item] {
+    def writes(item: Item) = Json.obj(
+      "id" -> item.itemID.get,
+      "name" -> item.name,
+      "quantity" -> item.quantity,
+      "price" -> item.price,
+      "description" -> item.description,
+      "categoryID" -> item.categoryID)
   }
   
   def showItems(page: Int) = Action.async { request =>

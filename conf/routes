@@ -18,6 +18,8 @@ POST	/admin/addItem				controllers.AdminController.addItem
 
 POST	/admin/removeItem			controllers.AdminController.removeItem
 
+POST 	/admin/login				controllers.AdminControler.adminLogin
+
 #POST	/payment/					controllers.PaymentController
 
 # Map static resources from the /public folder to the /assets URL path

@@ -1,4 +1,5 @@
 package models
+
 /**
   * Created by orkun on 27/04/17.
   */

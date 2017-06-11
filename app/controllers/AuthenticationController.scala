@@ -52,7 +52,7 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
           addedUser <- DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false))
         } yield {
           Logger.info("/register recieved user : " + addedUser)
-          Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
+          Ok(Json.obj("status" -> "Successful", "user" -> addedUser)).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
         }
         Future(Ok(Json.obj("status" -> "Successful")))
     }
