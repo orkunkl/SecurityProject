@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone} from '@angular/core';
 import { Item } from '../item/item'
+import { ItemComponent } from '../item/item.component'
 import { RestService } from '../services/rest.service'
 import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 
@@ -10,9 +11,9 @@ import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 })
 export class ItemlistComponent implements OnInit {
   
-  itemlist: Array<Item>;
+  itemlist: Item[];
   page: number;
-  constructor(private RestService: RestService, private toastyService: ToastyService, private toastyConfig: ToastyConfig) { }
+  constructor(private RestService: RestService, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private zone: NgZone) { }
 
   ngOnInit() {
   	this.page = 1;

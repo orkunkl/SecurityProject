@@ -68,7 +68,7 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
         }
       }
    }
-   def retrieveItems(page: Int): Future[Seq[Item]] = db.run(ItemTable.take(page.floor.toInt).drop(10).result)
+   def retrieveItems(page: Int): Future[Seq[Item]] = db.run(ItemTable.drop(page*10).take(10).result)
 
    def insertItem(item: Item) : Future[Item] = db.run(ItemTable.returning(ItemTable.map(item => item)) += item)
 

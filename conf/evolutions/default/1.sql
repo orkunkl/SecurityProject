@@ -59,12 +59,12 @@ CREATE TABLE UserAddressRelation
 
 INSERT INTO Items (name, quantity, price, description, picture_directory)
 VALUES
-('Nicholas cage', 5, 15, 'crazy hollywood actor', 'images/220px-Nicolas_Cage_2011_CC.jpg'),
-('Nikko cage', 4, 12, 'crazy hollywood bomber', 'images/cage5.jpg'),
-('Nikkos cage', 6, 22, 'crazy hollywood bomber', 'images/nicolas_cage_2011_a_p.jpg'),
-('Nicolas flagship killer', 6, 70, 'most attractive actor in the world', 'images/Nicolas-Cage.jpg'),
-('Nikio cage ', 8, 23, 'havali', 'images/nicolascage-faceoff-crazy.jpg'),
-('Cagos', 3, 79, 'crazy hollywood bomber', 'images/nicolascage-faceoff-crazy.jpg');
+('Nicholas cage', 5, 15, 'crazy hollywood actor', '220px-Nicolas_Cage_2011_CC.jpg'),
+('Nikko cage', 4, 12, 'crazy hollywood bomber', 'cage5.jpg'),
+('Nikkos cage', 6, 22, 'crazy hollywood bomber', 'nicolas_cage_2011_a_p.jpg'),
+('Nicolas flagship killer', 6, 70, 'most attractive actor in the world', 'Nicolas-Cage.jpg'),
+('Nikio cage ', 8, 23, 'havali', 'nicolascage-faceoff-crazy.jpg'),
+('Cagos', 3, 79, 'crazy hollywood bomber', 'nicolascage-faceoff-crazy.jpg');
 
 
 INSERT INTO Users (email, username, name, surname, password, is_admin)

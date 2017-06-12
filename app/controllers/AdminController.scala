@@ -69,6 +69,7 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
     (JsPath \ "username").read[String] and
     (JsPath \ "password").read[String]
   )(LoginForm)
+  
   def uploadItemPicture() = Admin.async(parse.multipartFormData) { request =>
     
     request.session.get("uploadID") match {

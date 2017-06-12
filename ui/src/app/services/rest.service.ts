@@ -17,7 +17,9 @@ export class RestService {
   private logoutUrl = this.baseUrl + "/logout";
   private itemUrl = this.baseUrl + "/item";
   private itemsUrl = this.baseUrl + "/items";
-  private adminLoginUrl = this.baseUrl + "/admin/login";  
+  private adminLoginUrl = this.baseUrl + "/admin/login";
+  public imageUrl = this.baseUrl + "/assets" + "/image";
+
   private options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) }); 
 
   constructor(private AuthHttp : AuthHttp, private http: Http, private toasty: ToastyService) { }
@@ -46,10 +48,12 @@ export class RestService {
   retrieveItems(page: number): Observable<Item[]> {
     return this.http.get(this.itemsUrl + '/' + page)
       .map(res => {
-        if(res.status == 200)
-          return {};
-        else 
+        if(res.status != 200)
+          return [];
+        else {
+          console.log(JSON.stringify(res.json().items))
           return res.json().items;
+        }
         });
   }
 }

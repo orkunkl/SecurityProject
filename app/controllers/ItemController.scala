@@ -14,6 +14,7 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import models.Item
 import play.filters.csrf._
+import play.api.Logger
 
 @Singleton
 class ItemController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller {
@@ -43,19 +44,18 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
       "name" -> item.name,
       "quantity" -> item.quantity,
       "price" -> item.price,
-      "description" -> item.description)
+      "description" -> item.description,
+      "imagesrc" -> item.imagesrc)
   }
   
   def showItems(page: Int) = Action.async { request =>
     
     if(page < 0)
       Future(BadRequest("invalid page number"))
-
-    DatabaseController.retrieveItems(page).map { items =>
+    DatabaseController.retrieveItems(page-1).map { items =>
       Ok(Json.obj(
         "status" -> "successful",
-        "items" -> Json.toJson(items)
-        ))
+        "items" -> items))
     }
   }
 
