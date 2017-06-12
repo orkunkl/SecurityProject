@@ -10,7 +10,7 @@ import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
 })
 export class ItemlistComponent implements OnInit {
   
-  itemlist: Item[];
+  itemlist: Array<Item>;
   page: number;
   constructor(private RestService: RestService, private toastyService: ToastyService, private toastyConfig: ToastyConfig) { }
 

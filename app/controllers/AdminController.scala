@@ -61,7 +61,7 @@ class AdminController @Inject()(environment: Environment, DatabaseController: Da
 
   def addItem() = Admin.async(validateJson[ItemFormat]) { request =>
     val item = request.body
-    DatabaseController.insertItem(Item(item.itemID, item.name, item.quantity, item.price, item.description, item.categoryID, null)).map { addedItem =>
+    DatabaseController.insertItem(Item(item.itemID, item.name, item.quantity, item.price, item.description, null)).map { addedItem =>
       Ok(Json.obj("status" -> "Successful")).withSession(request.session + ("uploadID" -> addedItem.itemID.get.toString))
     }
   }

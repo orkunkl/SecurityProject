@@ -40,14 +40,7 @@ CREATE TABLE Items
   quantity INTEGER,
   price INTEGER,
   description CHARACTER VARYING,
-  category_id INTEGER,
   picture_directory CHARACTER VARYING
-);
-
-CREATE TABLE Categories
-(
-  id SERIAL PRIMARY KEY,
-  name CHARACTER VARYING
 );
 
 CREATE TABLE PurchaseStatuses
@@ -56,14 +49,23 @@ CREATE TABLE PurchaseStatuses
   name CHARACTER VARYING,
   quantity INTEGER,
   price INTEGER,
-  description CHARACTER VARYING,
-  categoryID INTEGER
+  description CHARACTER VARYING
 );
 CREATE TABLE UserAddressRelation
 (
     user_id INTEGER REFERENCES Users(user_id) ON UPDATE NO ACTION ON DELETE CASCADE,
     address_id INTEGER REFERENCES Addresses(id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
+
+INSERT INTO Items (name, quantity, price, description, picture_directory)
+VALUES
+('Nicholas cage', 5, 15, 'crazy hollywood actor', 'images/220px-Nicolas_Cage_2011_CC.jpg'),
+('Nikko cage', 4, 12, 'crazy hollywood bomber', 'images/cage5.jpg'),
+('Nikkos cage', 6, 22, 'crazy hollywood bomber', 'images/nicolas_cage_2011_a_p.jpg'),
+('Nicolas flagship killer', 6, 70, 'most attractive actor in the world', 'images/Nicolas-Cage.jpg'),
+('Nikio cage ', 8, 23, 'havali', 'images/nicolascage-faceoff-crazy.jpg'),
+('Cagos', 3, 79, 'crazy hollywood bomber', 'images/nicolascage-faceoff-crazy.jpg');
+
 
 INSERT INTO Users (email, username, name, surname, password, is_admin)
 VALUES
@@ -72,12 +74,12 @@ VALUES
  ('alex@gmail.com', 'alexn', 'alex', 'TheDank', '$2a$10$pYi6UbNVWbmd2o/Z0V0sJOBQOuJGa3TGG3srz96GAxQOIE1j6fUAK', FALSE),
  ('bojan@gmail.com', 'bojane', 'bojan', 'maryan', '$2a$10$VixaPfZ6Cb6ZBUg3vBY6meTzA1E0vM7KMMXH.BcUFROEazCjDqTYC', FALSE),
  ('masha@gmail.com', 'mashar', 'masha', 'reko', '$2a$10$m4CZW9njkP65lkQhqGqEX.P.wirGRRpurrG2pgMD4TFyEXHq2M5VK', FALSE);
+  
 
 # --- !Downs
 DROP TABLE Addresses CASCADE;
 DROP TABLE Selections;
 DROP TABLE Items;
-DROP TABLE Categories;
 DROP TABLE PurchaseStatuses;
 DROP TABLE UserAddressRelation;
 DROP TABLE Users CASCADE;

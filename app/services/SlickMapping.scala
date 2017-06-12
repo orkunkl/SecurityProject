@@ -67,25 +67,16 @@ trait SlickMapping { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   class ItemTable(tag: Tag) extends Table[Item](tag, "items") {
 
-    def id = column[Int]("user_id", O.PrimaryKey, O.AutoInc)
+    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name")
     def quantity = column[Int]("quantity")
     def price = column[Float]("price")
     def description = column[String]("description")
-    def categoryID = column[Int]("category_id")
     def picDir = column[String]("picture_directory")
-    override def * = (id.?, name, quantity, price, description, categoryID, picDir) <> (Item.tupled, Item.unapply)
+    override def * = (id.?, name, quantity, price, description, picDir) <> (Item.tupled, Item.unapply)
   }
 
-  val CategoryTable = TableQuery[CategoryTable]
-
-  class CategoryTable(tag: Tag) extends Table[Category](tag, "categories") {
-
-    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("name")
-
-    override def * = (id.?, name) <> (Category.tupled, Category.unapply)
-  }
+  
   val PurchaseStatusTable = TableQuery[PurchaseStatusTable]
 
   class PurchaseStatusTable(tag: Tag) extends Table[PurchaseStatus](tag, "purchaseStatus") {

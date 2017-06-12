@@ -31,8 +31,8 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
           case itemFound(item) => Ok(Json.obj(
             "status" -> "successful", 
             "item" -> Json.toJson(item)))
-        }
       }
+    }
     else
       Future(BadRequest("invalid id"))
   }
@@ -43,8 +43,7 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
       "name" -> item.name,
       "quantity" -> item.quantity,
       "price" -> item.price,
-      "description" -> item.description,
-      "categoryID" -> item.categoryID)
+      "description" -> item.description)
   }
   
   def showItems(page: Int) = Action.async { request =>
