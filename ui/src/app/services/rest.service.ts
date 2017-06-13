@@ -18,7 +18,7 @@ export class RestService {
   private itemUrl = this.baseUrl + "/item";
   private itemsUrl = this.baseUrl + "/items";
   private adminLoginUrl = this.baseUrl + "/admin/login";
-  public imageUrl = this.baseUrl + "/assets" + "/image";
+  public imageUrl = this.baseUrl + "/assets" + "/images";
 
   private options = new RequestOptions({ headers: new Headers({ 'Content-Type': 'application/json' }) }); 
 

@@ -31,5 +31,8 @@ export class ItemlistComponent implements OnInit {
         this.toastyService.error(toastOptions);
       	});
   }
+  imageUrl(item: Item, url: String): string {
+    return this.RestService.imageUrl + "/" + item.imagesrc
+  }
 
 }

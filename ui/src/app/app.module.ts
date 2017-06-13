@@ -36,7 +36,8 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions, sess
     ItemlistComponent,
     AdminpanelComponent,
     AdminloginComponent,
-    DashboardComponent
+    DashboardComponent,
+  
   ],
   imports: [
     BrowserModule,
