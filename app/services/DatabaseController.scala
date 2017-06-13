@@ -17,7 +17,7 @@ import models._
 import utils.DatabaseHelpers._
 import play.api.Logger
 import com.github.t3hnar.bcrypt._
-
+import models.Cart
 
 
 /**
@@ -60,33 +60,37 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
    *
    */
 
-   def retrieveItem(id: Int): Future[dbItemCheckResponse] = {
-      db.run(ItemTable.filter(_.id === id).result.headOption).map {
-        _ match {
-          case None => itemNotFound
-          case Some(item) => itemFound(item)
-        }
+  def retrieveItem(id: Int): Future[dbItemCheckResponse] = {
+    db.run(ItemTable.filter(_.id === id).result.headOption).map {
+      _ match {
+        case None => itemNotFound
+        case Some(item) => itemFound(item)
       }
-   }
-   def retrieveItems(page: Int): Future[Seq[Item]] = db.run(ItemTable.drop(page*10).take(10).result)
+    }
+  }
+  def retrieveItems(page: Int): Future[Seq[Item]] = db.run(ItemTable.drop(page*10).take(10).result)
 
-   def insertItem(item: Item) : Future[Item] = db.run(ItemTable.returning(ItemTable.map(item => item)) += item)
+  def insertItem(item: Item) : Future[Item] = db.run(ItemTable.returning(ItemTable.map(item => item)) += item)
 
-   def removeItem(itemID: Int) : Future[Unit] = db.run(ItemTable.filter(_.id === itemID).delete).map { _ => ()}
+  def removeItem(itemID: Int) : Future[Unit] = db.run(ItemTable.filter(_.id === itemID).delete).map { _ => ()}
 
-   def updatePicture(itemID: Int, pictureDir: String) : Future[Unit] = db.run(
-     (for { item <- ItemTable if item.id === itemID } yield item.picDir).update(pictureDir)).map{ _ => ()}
+  def updatePicture(itemID: Int, pictureDir: String) : Future[Unit] = db.run(
+    (for { item <- ItemTable if item.id === itemID } yield item.picDir).update(pictureDir)).map{ _ => ()}
   /*
    *  
    *  Address Related 
    *
    */
 
-   def insertAddress(address: Address, user: User) : Future[Unit] = {
-     for {
+  def insertAddress(address: Address, user: User) : Future[Unit] = {
+    for {
       id <- db.run(AddressTable.returning(AddressTable.map(element => element.id)) += address)
-     } yield {
+    } yield {
       db.run(UserAddressRelationTable += UserAddressRelation(user.userID.get, id)).map{ _ => ()}
-     }
-   }
- }
+    }
+  }
+
+  def retrieveCart(userID: Int): Future[Option[Cart]] = {
+    db.run(SelectionTable.filter(_.id === userID).result)
+  }
+}

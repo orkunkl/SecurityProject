@@ -15,6 +15,8 @@ import play.api.libs.json.Reads._
 import models.Item
 import play.filters.csrf._
 import play.api.Logger
+import controllers.Secured
+import models.Cart
 
 @Singleton
 class ItemController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller {
@@ -47,7 +49,7 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
       "description" -> item.description,
       "imagesrc" -> item.imagesrc)
   }
-  
+
   def showItems(page: Int) = Action.async { request =>
     
     if(page < 0)
@@ -59,4 +61,10 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
     }
   }
 
+  
+  def retrieveCart() = Authenticated.async() {  implicit request =>
+    DatabaseController.
+    request.user.userID
+
+  }
 }
