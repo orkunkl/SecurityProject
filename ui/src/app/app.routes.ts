@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: ItemlistComponent },
   { path: 'admin', component: AdminpanelComponent },
-  { path: 'item/:id', component: ItemComponent }
+  { path: 'item', component: ItemComponent }
 ];
 
 

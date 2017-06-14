@@ -28,13 +28,13 @@
         </div>
     </div>
     <div class="col-7">
-        <h4>
+        <h4 *ngIf="item">
                         {{item.name}}
                     </h4>
-        <h5>
+        <h5 *ngIf="item">
                          {{item.price}}
                     </h5>
-        <p>
+        <p *ngIf="item" >
             {{item.description}}
         </p>
         <form class="form-inline">

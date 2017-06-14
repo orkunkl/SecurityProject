@@ -3,6 +3,8 @@ import { Item } from '../item/item'
 import { ItemComponent } from '../item/item.component'
 import { RestService } from '../services/rest.service'
 import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
+import { Router } from '@angular/router';
+import { SessionStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: 'app-itemlist',
@@ -13,7 +15,7 @@ export class ItemlistComponent implements OnInit {
   
   itemlist: Item[];
   page: number;
-  constructor(private RestService: RestService, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private zone: NgZone) { }
+  constructor(private sessionStorage: SessionStorageService, private router: Router, private RestService: RestService, private toastyService: ToastyService, private toastyConfig: ToastyConfig, private zone: NgZone) { }
 
   ngOnInit() {
   	this.page = 1;
@@ -34,5 +36,8 @@ export class ItemlistComponent implements OnInit {
   imageUrl(item: Item, url: String): string {
     return this.RestService.imageUrl + "/" + item.imagesrc
   }
-
+  changeRoute(item: Item){
+    this.sessionStorage.store("item", item)
+    this.router.navigateByUrl('/item');
+  }
 }

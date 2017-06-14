@@ -1,5 +1,5 @@
 <div *ngFor="let item of itemlist" class="col-12 col-sm-6 col-md-4 col-xl-3">
-    <a style="display:block" [routerLink]="['/item', item.id]" >
+    <a style="display:block"  (click)="changeRoute(item)" >
         <div class="card card-outline-primary">
             <img class="card-img-top mx-auto d-block" [src]="imageUrl(item, item.imagesrc)" width="250" height="250" alt="Card image cap">
             <div class="card-footer">

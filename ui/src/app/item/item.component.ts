@@ -3,6 +3,7 @@ import { RestService } from '../services/rest.service'
 import { Item } from './item'
 import { ActivatedRoute } from '@angular/router'
 import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
+import { SessionStorageService } from 'ngx-webstorage';
 
 @Component({
   selector: 'app-item',
@@ -13,23 +14,12 @@ export class ItemComponent implements OnInit {
   item: Item
   productID: number
 
-  constructor(private RestService: RestService, private route: ActivatedRoute, private toastyService: ToastyService) { }
+  constructor(private sessionStorage: SessionStorageService, private RestService: RestService, private route: ActivatedRoute, private toastyService: ToastyService) { }
 
   ngOnInit() {
-    this.productID = this.route.snapshot.params['id'];
-    this.RestService.retrieveItem(this.productID)
-      .subscribe(
-        item => { this.item = item },
-        err => {
-          let toastOptions:ToastOptions = {
-                  title: "Error",
-                  msg: err,
-                  showClose: true,
-                  timeout: 5000,
-                  theme: 'default',
-                };
-          this.toastyService.error(toastOptions);
-        })
+    this.item = this.sessionStorage.retrieve("item")
+    this.sessionStorage.clear("item")
+
   }
 
   imageUrl(url: String): string {
