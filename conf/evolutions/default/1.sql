@@ -25,13 +25,6 @@ CREATE TABLE Addresses
   country character varying
 );
 
-CREATE TABLE Selections
-(
-  id SERIAL PRIMARY KEY,
-  expiraton_date TIMESTAMP,
-  user_id INTEGER REFERENCES Users(user_id) ON UPDATE NO ACTION ON DELETE CASCADE,
-  status INTEGER
-);
 
 CREATE TABLE Items
 (
@@ -43,6 +36,15 @@ CREATE TABLE Items
   picture_directory CHARACTER VARYING
 );
 
+
+CREATE TABLE Selections
+(
+  id SERIAL PRIMARY KEY,
+  expiraton_date TIMESTAMP,
+  quantity INTEGER,
+  item_id INTEGER REFERENCES Items(id) ON UPDATE NO ACTION ON DELETE CASCADE,
+  user_id INTEGER REFERENCES Users(user_id) ON UPDATE NO ACTION ON DELETE CASCADE
+);
 CREATE TABLE PurchaseStatuses
 (
   id SERIAL PRIMARY KEY,

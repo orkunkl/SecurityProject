@@ -17,9 +17,10 @@ import play.filters.csrf._
 import play.api.Logger
 import controllers.Secured
 import models.Cart
+import models.Selection
 
 @Singleton
-class ItemController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller {
+class ItemController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller with Secured {
 
 
   def validateJson[A : Reads] = BodyParsers.parse.json.validate(
@@ -60,11 +61,48 @@ class ItemController @Inject()(environment: Environment, DatabaseController: Dat
         "items" -> items))
     }
   }
-
   
-  def retrieveCart() = Authenticated.async() {  implicit request =>
-    DatabaseController.
-    request.user.userID
-
+  implicit val selectionWrites = new Writes[Selection] { 
+    def writes(selection: Selection) = Json.obj(
+      "id" -> selection.id,
+      "userID" -> selection.userID,
+      "itemID" -> selection.itemID
+    ) 
   }
+  implicit val cartWrites = new Writes[Cart] { def writes(cart: Cart) = Json.obj("selections" -> cart.selections) } 
+
+  def retrieveCart() = Authenticated.async {  implicit request =>
+    DatabaseController.retrieveCart(request.user.userID).map {  selections =>
+      val cart = Cart(Seq.empty[Selection])
+      selections.foreach(selection => cart.selections :+ selection)
+      Ok(Json.obj("status" -> "successful", "cart" -> cart))
+    }
+    Future(Ok(""))
+  }
+
+  case class addItemToCartForm(itemID: Int, quantity: Int)
+
+  implicit val addItemToCartFormReads: Reads[addItemToCartForm] = (
+    (JsPath \ "itemID").read[Int] and
+    (JsPath \ "quantity").read[Int]
+  )(addItemToCartForm)
+
+  def addItemToCart() = Authenticated.async(validateJson[addItemToCartForm]) { implicit request =>
+    val body = request.body
+    DatabaseController.addSelection(Selection(null, body.itemID, body.quantity, request.user.userID)).map{selectionID =>
+      Ok(Json.obj("status" -> "successful", "selectionID" -> selectionID))
+    }
+  }
+  /*case class removeItemFromCartForm(selectionID: Int)
+
+  implicit val removeItemFromCartFormReads: Reads[removeItemFromCartForm] = (
+    (JsPath \ "selectionID").read[Int]
+  )(removeItemFromCartForm)
+
+  def removeItemFromCart() = Authenticated.async(validateJson[addItemToCartForm]) {
+    DatabaseController.removeSelection(request.body.seletionID).map{_ =>
+      Ok(Json.obj("status" -> "successful"))
+    }
+  }
+*/
 }

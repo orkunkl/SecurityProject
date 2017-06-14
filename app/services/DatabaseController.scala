@@ -25,7 +25,7 @@ import models.Cart
   */
 @Singleton
 class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, val system: ActorSystem) extends  HasDatabaseConfigProvider[JdbcProfile] 
-	with SlickMapping with DatabaseTrait {
+	with SlickMapping with DatabaseTrait  {
  
   /*
   *
@@ -89,8 +89,16 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
       db.run(UserAddressRelationTable += UserAddressRelation(user.userID.get, id)).map{ _ => ()}
     }
   }
+  /*
+   *
+   *  Cart Related
+   *
+   */
+  def retrieveCart(userID: Int): Future[Seq[Selection]] = db.run(SelectionTable.filter(_.id === userID).result)
+    //.foldLeft(new Cart(new Seq[Selection]()))((x,y) => x :+ y)
 
-  def retrieveCart(userID: Int): Future[Option[Cart]] = {
-    db.run(SelectionTable.filter(_.id === userID).result)
-  }
+  def addSelection(selection: Selection): Future[Int] = db.run(SelectionTable.returning(SelectionTable.map(selection => selection.id)) += selection)
+
+  def removeSelection(selectionID: Int): Future[Unit] = db.run(SelectionTable.filter(_.id === selectionID).delete).map{_ => ()}
+
 }

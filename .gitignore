@@ -8,3 +8,5 @@ target
 /RUNNING_PID
 npm-debug.log
 /.sbtserver
+/.ensime_cache
+/.ensime

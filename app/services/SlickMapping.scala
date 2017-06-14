@@ -49,18 +49,18 @@ trait SlickMapping { self: HasDatabaseConfigProvider[JdbcProfile] =>
     override def * = (id.?, userID, street, number, city, zipCode, state, country) <> (Address.tupled, Address.unapply)
   }
 
-  val SelectionTable = TableQuery[UserTable]
+  val SelectionTable = TableQuery[SelectionTable]
 
   class SelectionTable(tag: Tag) extends Table[Selection](tag, "selections") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def userID = column[Int]("user_id")
-    def expirationDate = column[Timestamp]("expiration_date")
-    def status = column[Short]("status")
+    def itemID = column[Int]("item_id")
+    def quantity = column[Int]("quantity")
+    def itemID_FK = foreignKey("itemID_FK", userID, UserTable)(_.userID, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+    def userID_FK = foreignKey("userID_FK", itemID, ItemTable)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
 
-    def userID_FK = foreignKey("userID_FK", userID, UserTable)(_.userID, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
-
-    override def * = (id.?, userID, expirationDate, status) <> (Selection.tupled, Selection.unapply)
+    override def * = (id.?, itemID, quantity, userID) <> (Selection.tupled, Selection.unapply)
   }
 
   val ItemTable = TableQuery[ItemTable]
