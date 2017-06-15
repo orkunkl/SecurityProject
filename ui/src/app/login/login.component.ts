@@ -20,7 +20,7 @@ import { User } from '../models/User'
 export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
   public registerForm: FormGroup;
-  public submitted: boolean;
+
   constructor(private _fb: FormBuilder, private RestService: RestService,  private toastyService:ToastyService,
                private toastyConfig: ToastyConfig, private sessionStorage: SessionStorageService, private router: Router) { }
 
@@ -41,11 +41,10 @@ export class LoginComponent implements OnInit {
     this.RestService.login(loginForm.username, loginForm.password).subscribe(
       data => {
           if(data.json().status == "Successful"){
-            console.log('login successful')
             this.sessionStorage.store("token", data.headers.get("Authorization"))
-            var json = data.json()
+            var json = data.json().user
             var user: User = new User(json.userID, json.username, json.email, json.surname, json.isAdmin)
-            this.sessionStorage.store("user", user)
+            this.sessionStorage.store("user", JSON.stringify(user))
             this.router.navigate(['/']);
 
             return true;

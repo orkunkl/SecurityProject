@@ -6,6 +6,7 @@ export class StripeService {
   constructor() { }
 
   openCheckout(amount: number) {
+    console.log("openCheckout")
     var handler = (<any>window).StripeCheckout.configure({
       key: 'pk_test_M2pj1Cx4GKswrAzjoCXLxnPW',
       locale: 'auto',

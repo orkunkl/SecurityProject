@@ -11,7 +11,7 @@ import { Item } from '../item/item'
 export class RestService {
 	
 	private token: string;
-	private baseUrl = "http://localhost:9000";
+	private baseUrl = "https://localhost:9443";
 	private loginUrl = this.baseUrl + "/login";
   private registerUrl = this.baseUrl + "/register";
   private logoutUrl = this.baseUrl + "/logout";
@@ -51,7 +51,6 @@ export class RestService {
         if(res.status != 200)
           return [];
         else {
-          console.log(JSON.stringify(res.json().items))
           return res.json().items;
         }
         });

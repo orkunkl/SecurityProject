@@ -1,0 +1,25 @@
+
+body {
+    padding-top: 4.5rem;
+}
+/*img {*/
+    /*max-width: 100%;*/
+    /*width: auto;*/
+    /*height: auto;*/
+    /*vertical-align: middle;*/
+    /*border: 0;*/
+    /*-ms-interpolation-mode: bicubic;*/
+/*}*/
+
+.card {
+    margin-bottom: 2em;
+}
+
+.img-fluid-perso{
+    width: 100%;
+    height: auto;
+}
+
+#example-number-input{
+    width: 4em;
+}

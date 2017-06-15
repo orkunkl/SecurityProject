@@ -7,7 +7,7 @@ version := "0.1-SNAPSHOT"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.8"
-
+javaOptions in run += "-Dhttp.port=<port>"
 libraryDependencies ++= Seq(
   cache,
   ws,
@@ -24,7 +24,6 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += Resolver.sonatypeRepo("releases")
 
 fork in run := true
-
 /*
  * UI Build Scripts
  */
@@ -33,6 +32,10 @@ val Success = 0 // 0 exit code
 val Error = 1 // 1 exit code
 
 PlayKeys.playRunHooks <+= baseDirectory.map(UIBuild.apply)
+/*
+ * HTTPS configuration 
+ */
+PlayKeys.devSettings := Seq("play.server.http.port" -> "disabled", "play.server.https.port" -> "9443")
 
 val isWindows = System.getProperty("os.name").toLowerCase().contains("win")
 

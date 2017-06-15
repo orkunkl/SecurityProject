@@ -80,7 +80,7 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
       val user = request.body
       DatabaseController.userLookup(user.username, user.password).map{
         _ match {
-          case userFoundPasswordMatches(user) => Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
+          case userFoundPasswordMatches(user) => Ok(Json.obj("status" -> "Successful", "user" -> user)).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
           case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
           case userNotFound => Ok(Json.obj("status" -> "user not found"))
         }

@@ -11,12 +11,17 @@ import { Http, RequestOptions } from '@angular/http';
 import { ToastyModule } from 'ng2-toasty';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RestService } from './services/rest.service';
+import { AuthGuardService } from './services/auth-guard.service'
+import { AuthService } from './services/auth.service'
 import { Ng2Webstorage, SessionStorageService } from 'ngx-webstorage';
 import { ItemComponent } from './item/item.component';
 import { ItemlistComponent } from './itemlist/itemlist.component';
 import { AdminpanelComponent } from './adminpanel/adminpanel.component';
 import { AdminloginComponent } from './adminpanel/adminlogin/adminlogin.component';
 import { DashboardComponent } from './adminpanel/dashboard/dashboard.component';
+import { CartComponent } from './cart/cart.component';
+import { CartService } from './cart/cart.service'
+import { StripeService } from './services/stripe.service'
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions, sessionService: SessionStorageService) {
   return new AuthHttp(
@@ -37,7 +42,7 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions, sess
     AdminpanelComponent,
     AdminloginComponent,
     DashboardComponent,
-  
+    CartComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +59,11 @@ export function authHttpServiceFactory(http: Http, options: RequestOptions, sess
       useFactory: authHttpServiceFactory,
       deps: [Http, RequestOptions]
     },
-    RestService
+    RestService,
+    AuthGuardService,
+    AuthService,
+    CartService,
+    StripeService
   ],
   bootstrap: [AppComponent]
 })
