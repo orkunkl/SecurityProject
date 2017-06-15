@@ -1,9 +1,9 @@
-curl -v -H "Content-Type: application/json" \
+curl -v -k -H "Content-Type: application/json" \
 -X POST -d '{
-  "username" : "xd",
-  "password": "xd"
+  "username" : "orkunk",
+  "password": "annen"
 }' \
-http://localhost:9000/login
+https://localhost:9443/login
 
 
 exit 0

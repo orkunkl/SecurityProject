@@ -20,6 +20,8 @@ POST	/admin/removeItem			controllers.AdminController.removeItem
 
 POST 	/admin/login				controllers.AdminController.adminLogin
 
+GET 	/csrfCheck					controllers.AuthenticationController.csrfCheck
+
 #POST	/payment/					controllers.PaymentController
 
 # Map static resources from the /public folder to the /assets URL path

@@ -15,5 +15,5 @@ class HomeController @Inject()(environment: Environment, DatabaseController: Dat
   def index = Action.async {
     Future{Ok(views.html.index("Your new Play & Angular 2 application is ready."))}
   }
-
+  
 }

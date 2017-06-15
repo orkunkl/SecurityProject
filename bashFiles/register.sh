@@ -6,7 +6,7 @@ curl -v -H "Content-Type: application/json" \
   "surname": "kulce",
   "password": "xd"
 }' \
-http://localhost:9000/register
+https://localhost:9443/register
 
 
 exit 0

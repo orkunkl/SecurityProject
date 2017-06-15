@@ -1,4 +1,4 @@
-curl -v http://localhost:9000/logout
+curl -v https://localhost:9443/logout
 
 
 exit 0

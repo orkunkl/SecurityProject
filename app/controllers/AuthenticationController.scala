@@ -95,4 +95,12 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
       }
     }
   }
+
+  def csrfCheck = checkToken { 
+    Action.async {
+      Future{
+        Ok("")
+      }
+    }
+  }
 }
