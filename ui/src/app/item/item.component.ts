@@ -31,7 +31,7 @@ export class ItemComponent implements OnInit {
 
   }
 
-  imageUrl(url: String): string {
+  imageUrl(): string {
   	return this.RestService.imageUrl + "/" + this.item.imagesrc
   }
 

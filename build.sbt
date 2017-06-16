@@ -1,4 +1,5 @@
 import scala.language.postfixOps
+import PlayKeys._
 
 name := """Security-Project"""
 
