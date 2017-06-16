@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
+import { RestService } from './rest.service'
 
 @Injectable()
 export class StripeService {
+  private token: string
 
-  constructor() { }
+  constructor(private restService: RestService) {
+    this.restService.retrieveStripeToken()
+      .subscribe(token => {console.log(token); this.token = token})
+     console.log(this.token)
+  }
 
   openCheckout(amount: number) {
     console.log("openCheckout")
@@ -11,8 +17,7 @@ export class StripeService {
       key: 'pk_test_M2pj1Cx4GKswrAzjoCXLxnPW',
       locale: 'auto',
       token: function (token: any) {
-        // You can access the token ID with `token.id`.
-        // Get the token ID to your server-side code for use.
+        return this.token
       }
     });
 

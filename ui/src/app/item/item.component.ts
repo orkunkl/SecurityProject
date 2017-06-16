@@ -7,6 +7,9 @@ import { SessionStorageService } from 'ngx-webstorage';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { CartService } from '../cart/cart.service'
 import { AddItemForm } from './AddItemForm'
+import { AuthService } from '../services/auth.service'
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-item',
   templateUrl: './item.component.html',
@@ -17,7 +20,7 @@ export class ItemComponent implements OnInit {
   productID: number
   newform: FormGroup
 
-  constructor(private fb: FormBuilder, private CartService: CartService, private sessionStorage: SessionStorageService, private RestService: RestService, 
+  constructor(private router: Router, private authService: AuthService, private fb: FormBuilder, private CartService: CartService, private sessionStorage: SessionStorageService, private RestService: RestService, 
               private route: ActivatedRoute, private toastyService: ToastyService) { }
   ngOnInit() {
     this.item = this.sessionStorage.retrieve("item")
@@ -34,16 +37,27 @@ export class ItemComponent implements OnInit {
 
   public submit(model: any, event: Event){
     event.preventDefault();
-    console.log(this.newform.value.quantity)
-    this.CartService.addItemToCart(this.item, this.newform.value.quantity)
-    console.log(this.CartService.cart.items)
-    let toastOptions:ToastOptions = {
-                title: "Item added to cart",
+
+    if(!this.authService.loggedIn()){
+        let toastOptions:ToastOptions = {
+                title: "You have to be logged in for adding item to cart",
                 showClose: true,
                 timeout: 5000,
                 theme: 'default',
               };
-     this.toastyService.info(toastOptions);
+       this.toastyService.error(toastOptions);
+       this.router.navigate(['/login']);
+    }
+    else {
+      this.CartService.addItemToCart(this.item, this.newform.value.quantity)
+      let toastOptions:ToastOptions = {
+                  title: "Item added to cart",
+                  showClose: true,
+                  timeout: 5000,
+                  theme: 'default',
+                };
+       this.toastyService.info(toastOptions);
+    }
   }
 
 }  

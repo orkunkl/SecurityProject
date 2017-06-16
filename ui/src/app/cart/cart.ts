@@ -1,7 +1,9 @@
 import { Item } from '../item/item'
+import { tuple } from './tuple'
+
 export class Cart {
-	items: Array<[Item, number]> //number for quantity
-	constructor(){
-		this.items = []
+	public items: Array<tuple> //number for quantity
+	public constructor(){
+		this.items = new Array<tuple>()
 	}
 }

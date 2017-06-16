@@ -3,13 +3,14 @@ import { registerForm } from '../models/registerForm.interface'
 import { loginForm } from '../models/loginForm.interface'
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { RestService } from '../services/rest.service'
-import { SessionStorageService } from 'ngx-webstorage';
+import {  } from 'ngx-webstorage';
 import { Observable } from 'rxjs/Observable';
 import { Response } from '@angular/http';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 import { Router } from '@angular/router';
 import { ItemlistComponent } from '../itemlist/itemlist.component'
 import { User } from '../models/User'
+import { SessionStorageService } from 'ngx-webstorage'
 
 @Component({
   selector: 'app-login',
@@ -42,6 +43,8 @@ export class LoginComponent implements OnInit {
       data => {
           if(data.json().status == "Successful"){
             this.sessionStorage.store("token", data.headers.get("Authorization"))
+            console.log(this.sessionStorage.retrieve("token"))
+            console.log(data)
             var json = data.json().user
             var user: User = new User(json.userID, json.username, json.email, json.surname, json.isAdmin)
             this.sessionStorage.store("user", JSON.stringify(user))

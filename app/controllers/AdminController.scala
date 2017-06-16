@@ -13,7 +13,6 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import models.Item
-import play.filters.csrf._
 import controllers.Secured
 import utils.forms.LoginForm
 import pdi.jwt._
@@ -22,28 +21,26 @@ import pdi.jwt.Jwt._
 import utils.UserAuthData
 
 @Singleton
-class AdminController @Inject()(environment: Environment, DatabaseController: DatabaseController, addToken: CSRFAddToken, checkToken: CSRFCheck) extends Controller with Secured{
+class AdminController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller with Secured{
 
   def validateJson[A: Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
   )
 
-  def adminLogin = addToken {
-    Action.async(validateJson[LoginForm]) { implicit request =>
+  def adminLogin = Action.async(validateJson[LoginForm]) { implicit request =>
     
-      val user = request.body
-      DatabaseController.userLookup(user.username, user.password).map{
-        _ match {
-          case userFoundPasswordMatches(user) => {
-            if(user.isAdmin)
-              Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
-            else
-              Ok(Json.obj("status" -> "User is not admin"))
-          }
-          case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
-          case userNotFound => Ok(Json.obj("status" -> "user not found"))
+    val user = request.body
+    DatabaseController.userLookup(user.username, user.password).map{
+      _ match {
+        case userFoundPasswordMatches(user) => {
+          if(user.isAdmin)
+            Ok(Json.obj("status" -> "Successful")).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
+          else
+            Ok(Json.obj("status" -> "User is not admin"))
         }
-      }
+        case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
+        case userNotFound => Ok(Json.obj("status" -> "user not found"))
+      }  
     }
   }
   case class ItemFormat(itemID: Option[Int], name: String, quantity: Int, price: Float, description: String, categoryID: Int)

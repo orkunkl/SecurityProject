@@ -19,10 +19,12 @@ import com.github.t3hnar.bcrypt._
 import pdi.jwt._
 import pdi.jwt.JwtSession._
 import pdi.jwt.Jwt._
-import play.filters.csrf._
 import utils.UserAuthData
+import controllers.Secured
+import play.api.Play.current
+
 @Singleton
-class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController, addToken: CSRFAddToken, checkToken: CSRFCheck) extends Controller {
+class AuthenticationController @Inject()(environment: Environment, DatabaseController: DatabaseController) extends Controller with Secured {
 
   def validateJson[A : Reads] = BodyParsers.parse.json.validate(
     _.validate[A].asEither.left.map(e => BadRequest(JsError.toJson(e)))
@@ -49,20 +51,19 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
           "isAdmin" -> user.isAdmin
       )
   }
-  def register = addToken {  
-      Action.async(validateJson[RegisterForm]){ implicit request =>
-        val user = request.body
-        for {
-          checkUsername <- DatabaseController.checkUsernameTaken(user.username)
-          if checkUsername
-          addedUser <- DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false))
-        } yield {
-          Logger.info("/register recieved user : " + addedUser)
-          Ok(Json.obj("status" -> "Successful", "user" -> addedUser)).addingToJwtSession("user", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
-        }
-        Future(Ok(Json.obj("status" -> "Successful")))
-    }
+  def register = Action.async(validateJson[RegisterForm]){ implicit request =>
+    val user = request.body
+      for {
+        checkUsername <- DatabaseController.checkUsernameTaken(user.username)
+        if checkUsername
+        addedUser <- DatabaseController.addNewUser(User(None, user.username, user.email, user.name, user.surname, user.password.bcrypt, false))
+      } yield {
+        Logger.info("/register recieved user : " + addedUser)
+        Ok(Json.obj("status" -> "Successful", "user" -> addedUser)).addingToJwtSession("token", UserAuthData(addedUser.userID.get, addedUser.username, addedUser.password, addedUser.isAdmin))
+      }
+      Future(Ok(Json.obj("status" -> "Successful")))
   }
+  
   
   /*
   *
@@ -74,33 +75,35 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
     (JsPath \ "password").read[String]
   )(LoginForm)
 
-  def login = addToken {
-    Action.async(validateJson[LoginForm]) { implicit request =>
-    
-      val user = request.body
-      DatabaseController.userLookup(user.username, user.password).map{
-        _ match {
-          case userFoundPasswordMatches(user) => Ok(Json.obj("status" -> "Successful", "user" -> user)).addingToJwtSession("user", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
-          case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
-          case userNotFound => Ok(Json.obj("status" -> "user not found"))
-        }
+  def login = Action.async(validateJson[LoginForm]) { implicit request =>
+    val user = request.body
+    DatabaseController.userLookup(user.username, user.password).map{
+      _ match {
+        case userFoundPasswordMatches(user) => Ok(Json.obj("status" -> "Successful", "user" -> user)).addingToJwtSession("Authorization", UserAuthData(user.userID.get, user.username, user.password, user.isAdmin))
+        case userFoundPasswordNoMatch => Ok(Json.obj("status" -> "password do not match"))
+        case userNotFound => Ok(Json.obj("status" -> "user not found"))
       }
     }
   }
+  
 
-  def logout = checkToken { 
-    Action.async {
-      Future{
-        Ok(Json.obj("status" -> "successful")).withNewSession
-      }
-    }
+  def logout = Action.async {
+    Future{Ok(Json.obj("status" -> "successful")).withNewSession}
   }
+  
 
-  def csrfCheck = checkToken { 
-    Action.async {
-      Future{
-        Ok("")
-      }
+  def csrfCheck = Action.async {
+    Future{
+      Ok("")
     }
   }
+  
+
+  def retrieveStripeToken = Authenticated.async {
+    Future{
+      Logger.debug(current.configuration.getString("stripeToken").get)
+      Ok(Json.obj("token" -> current.configuration.getString("stripeToken").get))
+    }
+  }
+  
 }

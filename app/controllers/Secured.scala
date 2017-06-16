@@ -8,7 +8,7 @@ import play.api.mvc.Results._
 import play.api.libs.json._
 import pdi.jwt.JwtSession._
 import pdi.jwt._
-
+import play.api.Logger
 import utils.UserAuthData
 
 class AuthenticatedRequest[A](val user: UserAuthData, request: Request[A]) extends WrappedRequest[A](request)
@@ -20,16 +20,19 @@ trait Secured {
 
 object AuthenticatedAction extends ActionBuilder[AuthenticatedRequest] {
 
-  def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]) =
-    request.jwtSession.getAs[UserAuthData]("user") match {
+  def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]) ={
+    Logger.debug(request.headers.toString)
+    Logger.debug(request.body.toString)
+    request.jwtSession.getAs[UserAuthData]("Authorization") match {
       case Some(user) => block(new AuthenticatedRequest(user, request)).map(_.refreshJwtSession(request))
       case _ => Future.successful(Unauthorized)
     }
+  }
 }
 
 object AdminAction extends ActionBuilder[AuthenticatedRequest] {
   def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]) =
-    request.jwtSession.getAs[UserAuthData]("user") match {
+    request.jwtSession.getAs[UserAuthData]("Authorization") match {
       case Some(user) => {
         if (user.isAdmin) 
           block(new AuthenticatedRequest(user, request)).map(_.refreshJwtSession(request))
