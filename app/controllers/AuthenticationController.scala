@@ -47,7 +47,8 @@ class AuthenticationController @Inject()(environment: Environment, DatabaseContr
       def writes(user: User) = Json.obj(
           "userID" -> user.userID,
           "username" -> user.username,
-          "password" -> user.password,
+          "email" -> user.email,
+          "surname" -> user.surname,
           "isAdmin" -> user.isAdmin
       )
   }

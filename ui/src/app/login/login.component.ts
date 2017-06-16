@@ -95,6 +95,7 @@ export class LoginComponent implements OnInit {
                 theme: 'default',
               };
             this.toastyService.error(toastOptions);
+            this.router.navigate(['/']);
             return false;
           }
         },

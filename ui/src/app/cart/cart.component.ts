@@ -4,6 +4,7 @@ import { Cart } from './cart'
 import { StripeService } from '../services/stripe.service'
 import { tuple } from './tuple'
 import { Item } from '../item/item'
+import { RestService } from '../services/rest.service'
 
 @Component({
   selector: 'app-cart',
@@ -13,7 +14,7 @@ import { Item } from '../item/item'
 export class CartComponent implements OnInit {
   cart: Cart
   totalPrice: number
-  constructor(private StripeService: StripeService, private CartService: CartService) { }
+  constructor(private RestService: RestService, private StripeService: StripeService, private CartService: CartService) { }
 
   ngOnInit() {
   	this.cart = this.CartService.cart
@@ -29,5 +30,8 @@ export class CartComponent implements OnInit {
   }
   openCheckout(){
   	this.StripeService.openCheckout(this.totalPrice*100)
+  }
+  imageUrl(url: String): string {
+    return this.RestService.imageUrl + "/" + url
   }
 }
